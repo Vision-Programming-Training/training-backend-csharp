@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // SQLite は decimal をネイティブに扱えないため、桁を明示しておく。
+        // SQLite は decimal をネイティブに扱えないため、桁を明示しておく
         modelBuilder.Entity<Product>()
             .Property(p => p.Price)
             .HasColumnType("decimal(18,2)");
@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
             .Property(c => c.DiscountValue)
             .HasColumnType("decimal(18,2)");
 
-        // 列挙型は読みやすいよう文字列で保存する。
+        // 列挙型は読みやすいよう文字列で保存する
         modelBuilder.Entity<Order>()
             .Property(o => o.Status)
             .HasConversion<string>();

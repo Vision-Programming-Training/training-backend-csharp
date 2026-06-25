@@ -4,8 +4,8 @@ using TrainingBackend.Exceptions;
 namespace TrainingBackend.Middleware;
 
 /// <summary>
-/// Service 層が投げた例外を HTTP ステータスへ変換する。
-/// これにより Controller は例外処理を書かずに済み、薄く保てる。
+/// Service 層が投げた例外を HTTP ステータスへ変換する
+/// これにより Controller は例外処理を書かずに済み、薄く保てる
 /// </summary>
 public class ExceptionHandlingMiddleware
 {

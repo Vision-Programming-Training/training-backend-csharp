@@ -1,6 +1,6 @@
 namespace TrainingBackend.Dtos;
 
-/// <summary>注文明細をクライアントに返すための DTO。商品名込み。</summary>
+/// <summary>注文明細をクライアントに返すための DTO（商品名込み）</summary>
 public record OrderItemDto(
     int ProductId,
     string ProductName,
@@ -8,7 +8,7 @@ public record OrderItemDto(
     decimal UnitPrice,
     decimal LineTotal);
 
-/// <summary>注文をクライアントに返すための DTO。</summary>
+/// <summary>注文をクライアントに返すための DTO</summary>
 public record OrderDto(
     int Id,
     string Status,

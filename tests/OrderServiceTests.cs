@@ -11,7 +11,7 @@ namespace TrainingBackend.Tests;
 
 public class OrderServiceTests
 {
-    // テストごとに独立したインメモリ DB を用意する。
+    // テストごとに独立したインメモリ DB を用意する
     private static AppDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -66,11 +66,11 @@ public class OrderServiceTests
         Assert.Equal(1980m, result.TotalAmount); // 1800 * 1.10
         Assert.Equal(2, result.Items.Count);
 
-        // 在庫が引かれている。
+        // 在庫が引かれている
         Assert.Equal(48, (await db.Products.FindAsync(1))!.Stock);
         Assert.Equal(19, (await db.Products.FindAsync(2))!.Stock);
 
-        // 単価スナップショットと商品名が入っている。
+        // 単価スナップショットと商品名が入っている
         var noteLine = result.Items.Single(i => i.ProductId == 1);
         Assert.Equal("ノート", noteLine.ProductName);
         Assert.Equal(300m, noteLine.UnitPrice);
@@ -108,7 +108,7 @@ public class OrderServiceTests
 
         await Assert.ThrowsAsync<BusinessRuleException>(() => service.CreateAsync(request));
 
-        // 失敗時に在庫が変わっていないこと。
+        // 失敗時に在庫が変わっていないこと
         Assert.Equal(0, (await db.Products.FindAsync(3))!.Stock);
     }
 

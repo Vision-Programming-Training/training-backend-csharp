@@ -3,8 +3,8 @@ using TrainingBackend.Entities;
 namespace TrainingBackend.Data;
 
 /// <summary>
-/// 初期データを投入する。アプリ起動時に一度だけ呼ばれる。
-/// 既にデータがあれば何もしない（再起動で二重投入しない）。
+/// 初期データを投入する（アプリ起動時に一度だけ呼ばれる）
+/// 既にデータがあれば何もしない（再起動で二重投入しない）
 /// </summary>
 public static class SeedData
 {
@@ -42,11 +42,11 @@ public static class SeedData
 
         db.Coupons.AddRange(welcomeCoupon, saleCoupon);
 
-        // 商品・クーポンの Id を確定させてから注文を作る。
+        // 商品・クーポンの Id を確定させてから注文を作る
         db.SaveChanges();
 
         // --- 既存の注文（一覧・明細の確認用） ---
-        // 合計金額は「(税抜小計 - 割引) × 1.10」を円未満四捨五入した値。
+        // 合計金額は「(税抜小計 - 割引) × 1.10」を円未満四捨五入した値
         var orderA = new Order
         {
             Status = OrderStatus.Confirmed,

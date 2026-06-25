@@ -8,6 +8,6 @@ public interface IProductRepository
 
     Task<Product?> GetByIdAsync(int id);
 
-    /// <summary>指定 Id の商品をまとめて取得する（注文作成時に複数商品を引くため）。</summary>
+    /// <summary>指定 Id の商品をまとめて取得する（注文作成時に複数商品を引くため）</summary>
     Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids);
 }

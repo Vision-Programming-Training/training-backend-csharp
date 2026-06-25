@@ -15,7 +15,7 @@ public class OrderRepository : IOrderRepository
 
     public async Task<List<Order>> GetAllAsync()
     {
-        // Include で明細・商品・クーポンをまとめて読み込み、一覧表示での N+1 を避ける。
+        // Include で明細・商品・クーポンをまとめて読み込み、一覧表示での N+1 を避ける
         return await _db.Orders
             .Include(o => o.Items)
                 .ThenInclude(i => i.Product)

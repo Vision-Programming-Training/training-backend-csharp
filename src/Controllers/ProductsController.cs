@@ -16,7 +16,7 @@ public class ProductsController : ControllerBase
         _productRepository = productRepository;
     }
 
-    /// <summary>商品一覧を取得する。</summary>
+    /// <summary>商品一覧を取得する</summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
@@ -25,7 +25,7 @@ public class ProductsController : ControllerBase
         return Ok(dtos);
     }
 
-    /// <summary>商品詳細を取得する。存在しない場合は 404。</summary>
+    /// <summary>商品詳細を取得する（存在しない場合は 404）</summary>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {

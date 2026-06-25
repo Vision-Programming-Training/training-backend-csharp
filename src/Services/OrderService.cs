@@ -6,8 +6,8 @@ using TrainingBackend.Repositories;
 namespace TrainingBackend.Services;
 
 /// <summary>
-/// 注文に関する業務ロジックの中心。
-/// 在庫チェック・クーポン適用・合計金額の確定・在庫の戻し（キャンセル）を担う。
+/// 注文に関する業務ロジックの中心
+/// 在庫チェック・クーポン適用・合計金額の確定・在庫の戻し（キャンセル）を担う
 /// </summary>
 public class OrderService : IOrderService
 {
@@ -46,7 +46,7 @@ public class OrderService : IOrderService
             throw new BusinessRuleException("注文には商品を 1 つ以上含めてください。");
         }
 
-        // 同じ商品が複数行で来ても在庫チェックが正しく効くよう、商品ごとに数量を合算する。
+        // 同じ商品が複数行で来ても在庫チェックが正しく効くよう、商品ごとに数量を合算する
         var requestedQuantities = request.Items
             .GroupBy(i => i.ProductId)
             .ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
@@ -96,7 +96,7 @@ public class OrderService : IOrderService
         await _orderRepository.AddAsync(order);
         await _orderRepository.SaveChangesAsync();
 
-        // 商品名・クーポン込みの完全なグラフを読み直して返す。
+        // 商品名・クーポン込みの完全なグラフを読み直して返す
         var created = await _orderRepository.GetByIdAsync(order.Id);
         return MapToDto(created!);
     }
@@ -111,7 +111,7 @@ public class OrderService : IOrderService
             throw new BusinessRuleException("この注文は既にキャンセル済みです。");
         }
 
-        // 在庫を戻す。
+        // 在庫を戻す
         foreach (var item in order.Items)
         {
             item.Product.Stock += item.Quantity;
