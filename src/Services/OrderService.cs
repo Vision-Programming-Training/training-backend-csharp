@@ -75,7 +75,7 @@ public class OrderService : IOrderService
                 throw new NotFoundException($"商品が見つかりません (ProductId: {productId})");
             }
 
-            if (product.Stock < quantity)
+            if (product.Stock <= quantity)
             {
                 throw new BusinessRuleException(
                     $"在庫が不足しています (商品: {product.Name}, 在庫: {product.Stock}, 要求: {quantity})");
