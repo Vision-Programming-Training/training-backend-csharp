@@ -238,4 +238,34 @@ public class OrderServiceTests
         Assert.Equal(second.Id, all[0].Id); // CreatedAt 降順
         Assert.Equal(first.Id, all[1].Id);
     }
+
+    [Fact]
+    public async Task Order_keeps_unit_price_even_after_product_price_changes()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        // ノート(¥300) を 2 個注文して確定する
+        var created = await service.CreateAsync(new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 1, Quantity = 2 } }
+        });
+
+        // 確定時点の単価・小計（スナップショット）を控えておく
+        var orderedLine = created.Items.Single(i => i.ProductId == 1);
+        Assert.Equal(300m, orderedLine.UnitPrice);
+        Assert.Equal(600m, orderedLine.LineTotal);
+
+        // あとから商品マスタの価格を値上げする（管理画面での価格変更に相当）
+        var product = await db.Products.FindAsync(1);
+        product!.Price = 800m;
+        await db.SaveChangesAsync();
+
+        // 過去の確定済み注文を開き直しても、明細は注文時点の単価・小計のまま
+        var fetched = await service.GetByIdAsync(created.Id);
+        var historyLine = fetched.Items.Single(i => i.ProductId == 1);
+        Assert.Equal(300m, historyLine.UnitPrice);              // 現在価格 800 に引きずられない
+        Assert.Equal(600m, historyLine.LineTotal);             // 小計も不変
+        Assert.Equal(created.TotalAmount, fetched.TotalAmount); // 税込合計も不変
+    }
 }
