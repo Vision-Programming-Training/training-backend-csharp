@@ -34,4 +34,17 @@ public class ProductsController : ControllerBase
 
         return Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
     }
+
+    /// <summary>商品の価格を変更する（存在しない場合は 404）</summary>
+    [HttpPut("{id:int}/price")]
+    public async Task<ActionResult<ProductDto>> UpdatePrice(int id, [FromBody] UpdateProductPriceRequest request)
+    {
+        var product = await _productRepository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"商品が見つかりません (ProductId: {id})");
+
+        product.Price = request.Price;
+        await _productRepository.SaveChangesAsync();
+
+        return Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
+    }
 }
