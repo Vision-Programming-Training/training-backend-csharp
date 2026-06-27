@@ -36,10 +36,6 @@ public class ProductsController : ControllerBase
     }
 
     /// <summary>商品の価格を変更する（存在しない場合は 404）</summary>
-    /// <remarks>
-    /// 既存の確定済み注文には影響しない。注文明細は注文時点の単価（OrderItem.UnitPrice）を
-    /// スナップショットとして保持しているため、ここで変えた価格は新規注文にのみ反映される。
-    /// </remarks>
     [HttpPut("{id:int}/price")]
     public async Task<ActionResult<ProductDto>> UpdatePrice(int id, [FromBody] UpdateProductPriceRequest request)
     {
