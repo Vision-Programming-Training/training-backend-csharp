@@ -111,12 +111,6 @@ public class OrderService : IOrderService
             throw new BusinessRuleException("この注文は既にキャンセル済みです。");
         }
 
-        // 在庫を戻す
-        foreach (var item in order.Items)
-        {
-            item.Product.Stock += item.Quantity;
-        }
-
         order.Status = OrderStatus.Cancelled;
         await _orderRepository.SaveChangesAsync();
 
