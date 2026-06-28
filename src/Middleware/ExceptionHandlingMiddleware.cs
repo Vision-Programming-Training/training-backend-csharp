@@ -25,10 +25,6 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
-        catch (NotFoundException ex)
-        {
-            await WriteProblemAsync(context, StatusCodes.Status404NotFound, ex.Message);
-        }
         catch (BusinessRuleException ex)
         {
             await WriteProblemAsync(context, StatusCodes.Status400BadRequest, ex.Message);
