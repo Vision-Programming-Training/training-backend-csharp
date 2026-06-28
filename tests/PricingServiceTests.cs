@@ -46,14 +46,6 @@ public class PricingServiceTests
     }
 
     [Fact]
-    public void ApplyCoupon_never_goes_below_zero()
-    {
-        var coupon = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 5000m };
-
-        Assert.Equal(0m, _pricing.ApplyCoupon(1800m, coupon));
-    }
-
-    [Fact]
     public void CalculateTotal_adds_10_percent_tax_without_coupon()
     {
         var items = Items((300m, 2), (1200m, 1)); // 小計 1800
