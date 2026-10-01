@@ -28,7 +28,7 @@ dotnet test --filter "Name=CreateAsync_creates_order_decrements_stock_and_comput
 
 DB リセット: `src/training.db`（および `-shm` / `-wal`）を削除して再度 `dotnet run --project src`。起動時に `EnsureCreated` + seed で初期データから作り直される（マイグレーションは使っていない）。
 
-CI は PR / push (main) で `dotnet restore` → `dotnet build --configuration Release` → `dotnet test` を回す。**赤い状態でコミット・PR しない**のが研修ルール。
+CI は PR / push (main) で `dotnet restore` → `dotnet build --configuration Release` → `dotnet test` を回す。**赤い状態で PR を出さない**のが研修ルール。
 
 ## Architecture
 
@@ -56,5 +56,5 @@ Service 層は **`NotFoundException` (→ HTTP 404) / `BusinessRuleException` (�
 ## Conventions (from CONTRIBUTING.md)
 
 - `main` に直接コミットしない。ブランチを切る: `feature/` `fix/` `refactor/` `docs/`。
-- 1 コミット = 1 つの意味のある変更。ビルドが通らない/テストが赤い状態でコミットしない。
+- 1 コミット = 1 つの意味のある変更。
 - PR は `.github/pull_request_template.md` の項目（何を変えたか / どう確認したか / 影響範囲）を埋める。
