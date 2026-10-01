@@ -21,8 +21,12 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         var products = await _productRepository.GetAllAsync();
-        var dtos = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock));
-        return Ok(dtos);
+
+        var dtos = products.Select(p =>
+            new ProductDto(p.Id, p.Name, p.Price, p.Stock)
+        );
+
+        return this.Ok(dtos);
     }
 
     /// <summary>商品詳細を取得する（存在しない場合は 404）</summary>
@@ -32,7 +36,7 @@ public class ProductsController : ControllerBase
         var product = await _productRepository.GetByIdAsync(id)
             ?? throw new NotFoundException($"商品が見つかりません (ProductId: {id})");
 
-        return Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
+        return this.Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
     }
 
     /// <summary>商品の価格を変更する（存在しない場合は 404）</summary>
@@ -45,6 +49,6 @@ public class ProductsController : ControllerBase
         product.Price = request.Price;
         await _productRepository.SaveChangesAsync();
 
-        return Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
+        return this.Ok(new ProductDto(product.Id, product.Name, product.Price, product.Stock));
     }
 }

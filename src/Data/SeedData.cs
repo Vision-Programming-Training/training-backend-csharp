@@ -19,12 +19,12 @@ public static class SeedData
         var notebook = new Product { Name = "ノート", Price = 300m, Stock = 50 };
         var pen = new Product { Name = "ボールペン", Price = 150m, Stock = 100 };
         var mug = new Product { Name = "マグカップ", Price = 1200m, Stock = 20 };
-        var tshirt = new Product { Name = "Tシャツ", Price = 2500m, Stock = 10 };
+        var tShirt = new Product { Name = "Tシャツ", Price = 2500m, Stock = 10 };
         var sticker = new Product { Name = "ステッカー", Price = 200m, Stock = 0 }; // 在庫切れ
         var toteBag = new Product { Name = "トートバッグ", Price = 1800m, Stock = 15 };
         var keychain = new Product { Name = "キーホルダー", Price = 600m, Stock = 30 };
 
-        db.Products.AddRange(notebook, pen, mug, tshirt, sticker, toteBag, keychain);
+        db.Products.AddRange(notebook, pen, mug, tShirt, sticker, toteBag, keychain);
 
         // --- クーポン（定額・定率を各 1） ---
         var welcomeCoupon = new Coupon
@@ -66,7 +66,7 @@ public static class SeedData
             CreatedAt = new DateTime(2026, 1, 12, 14, 30, 0, DateTimeKind.Utc),
             Items =
             {
-                new OrderItem { ProductId = tshirt.Id, Quantity = 1, UnitPrice = tshirt.Price },
+                new OrderItem { ProductId = tShirt.Id, Quantity = 1, UnitPrice = tShirt.Price },
                 new OrderItem { ProductId = pen.Id, Quantity = 3, UnitPrice = pen.Price }
             },
             TotalAmount = 2695m // (2950 - 500) * 1.10

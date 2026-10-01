@@ -20,7 +20,7 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
     {
         var orders = await _orderService.GetAllAsync();
-        return Ok(orders);
+        return this.Ok(orders);
     }
 
     /// <summary>注文詳細を取得する（存在しない場合は 404）</summary>
@@ -28,7 +28,7 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<OrderDto>> GetById(int id)
     {
         var order = await _orderService.GetByIdAsync(id);
-        return Ok(order);
+        return this.Ok(order);
     }
 
     /// <summary>注文を作成する（商品 ID・数量・任意のクーポンコード）</summary>
@@ -36,7 +36,12 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<OrderDto>> Create([FromBody] CreateOrderRequest request)
     {
         var order = await _orderService.CreateAsync(request);
-        return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
+
+        return this.CreatedAtAction(
+            nameof(this.GetById),
+            new { id = order.Id },
+            order
+        );
     }
 
     /// <summary>注文をキャンセルする（在庫を戻し、ステータスを Cancelled にする）</summary>
@@ -44,6 +49,6 @@ public class OrdersController : ControllerBase
     public async Task<ActionResult<OrderDto>> Cancel(int id)
     {
         var order = await _orderService.CancelAsync(id);
-        return Ok(order);
+        return this.Ok(order);
     }
 }
