@@ -18,6 +18,7 @@ public class ExceptionHandlingMiddleware
         _logger = logger;
     }
 
+    /// <summary>例外とAPIステータスコードの紐付け</summary>
     public async Task InvokeAsync(HttpContext context)
     {
         try

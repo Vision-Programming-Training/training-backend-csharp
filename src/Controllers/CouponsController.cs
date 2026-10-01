@@ -20,7 +20,11 @@ public class CouponsController : ControllerBase
     public async Task<ActionResult<IEnumerable<CouponDto>>> GetAll()
     {
         var coupons = await _couponRepository.GetAllAsync();
-        var dtos = coupons.Select(c => new CouponDto(c.Code, c.DiscountType.ToString(), c.DiscountValue));
-        return Ok(dtos);
+
+        var dtos = coupons.Select(c =>
+            new CouponDto(c.Code, c.DiscountType.ToString(), c.DiscountValue)
+        );
+
+        return this.Ok(dtos);
     }
 }
