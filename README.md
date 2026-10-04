@@ -23,13 +23,22 @@ main ブランチは「正しく動く完成形」です。
 
 ### 必要なもの
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)（`dotnet --version` で 8.x が出れば OK）
+どちらか一方でOKです。
 
-### サーバーの起動
+- **コマンドラインで動かす場合**: [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)（`dotnet --version` で 8.x が出れば OK）
+- **Visual Studio で動かす場合**: [Visual Studio 2022](https://visualstudio.microsoft.com/ja/vs/)（Community 版で可）<br>
+  インストーラの「ワークロード」で **「ASP.NET と Web 開発」** にチェックを入れてください。これで .NET 8 SDK も一緒に入ります（別途 SDK を入れる必要はありません）。
+
+まずはリポジトリを clone します。
 
 ```bash
 git clone https://github.com/Vision-Programming-Training/training-backend-csharp.git
 cd training-backend-csharp
+```
+
+### コマンドラインで起動する
+
+```bash
 dotnet run --project src
 ```
 
@@ -40,6 +49,25 @@ SQLite の DB ファイル（`training.db`）は起動時に自動生成され�
 
 - Swagger UI: <http://localhost:5000/swagger>
 - API ベース URL: <http://localhost:5000>
+
+### Visual Studio で起動する （おすすめ）
+
+コマンドライン操作に慣れていない場合は、Visual Studio から起動するのが簡単です。
+
+1. **ソリューションを開く** <br>
+   clone したフォルダ内の `training-backend-csharp.sln` をダブルクリック
+2. **スタートアップ プロジェクトを確認する** <br>
+   ソリューション エクスプローラーで **`TrainingBackend`**（`src` 側）がスタートアップ プロジェクトになっていることを確認します。なっていなければ右クリック →「スタートアップ プロジェクトに設定」。<br>
+   ※ `TrainingBackend.Tests` はテスト用なので起動対象ではありません。
+3. **起動する** <br>
+   ツールバーの緑の ▶（実行プロファイルが **`http`** になっていることを確認）を押す。デバッグ実行は **F5**、デバッグなし実行は **Ctrl + F5**。<br>
+   初回はビルド〜DB初期化まで自動で行われます。
+4. **Swagger UI が自動で開く** <br>
+   ブラウザが起動して <http://localhost:5000/swagger> が開きます。ここから API を叩いて動作確認できます。
+5. **停止するとき** <br>
+   ツールバーの赤い ■（停止）、またはデバッグ実行中は **Shift + F5**。
+
+> `dotnet run` と同じ設定（ポート 5000 / 起動時に Swagger を開く）で動きます。設定は `src/Properties/launchSettings.json` の `http` プロファイルに入っています。
 
 ### フロントと一緒に動かす
 
@@ -144,6 +172,8 @@ Content-Type: application/json
 ```bash
 dotnet test
 ```
+
+Visual Studio の場合は、メニューの **「テスト」→「テスト エクスプローラー」** を開き、上部の ▶（すべて実行）で実行できます。各テストの緑✓／赤✗が一覧で確認でき、赤いテストをダブルクリックすると該当コードへ飛べます。
 
 主要ロジック（合計金額計算・クーポン適用・在庫チェック・注文作成・キャンセル）に xUnit テストがあり、**すべてグリーン**です。
 このテスト群が「正しい挙動の保証」になります。コードを直したら必ず実行してください。
