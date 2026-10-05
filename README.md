@@ -23,73 +23,37 @@ main ブランチは「正しく動く完成形」です。
 
 ### 必要なもの
 
-どちらか一方でOKです。
-
-- **コマンドラインで動かす場合**: [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)（`dotnet --version` で 8.x が出れば OK）
-- **Visual Studio で動かす場合**: [Visual Studio 2022](https://visualstudio.microsoft.com/ja/vs/)（Community 版で可）<br>
+- [Visual Studio 2022](https://visualstudio.microsoft.com/ja/vs/)（Community 版で可）<br>
   インストーラの「ワークロード」で **「ASP.NET と Web 開発」** にチェックを入れてください。これで .NET 8 SDK も一緒に入ります（別途 SDK を入れる必要はありません）。
 
-まずはリポジトリを clone します。
+### リポジトリを取得して起動する
 
-```bash
-git clone https://github.com/Vision-Programming-Training/training-backend-csharp.git
-cd training-backend-csharp
-```
-
-### コマンドラインで起動する
-
-```bash
-dotnet run --project src
-```
-
-これだけで「依存解決 → ビルド → 起動 → SQLite に初期データ投入」まで自動で行われます。<br>
-SQLite の DB ファイル（`training.db`）は起動時に自動生成され、初期データ（商品・クーポン・既存注文）が入ります。インストール作業は不要です。
-
-起動後、ブラウザで Swagger UI が開きます（自動で開かない場合は手動で）:
-
-- Swagger UI: <http://localhost:5000/swagger>
-- API ベース URL: <http://localhost:5000>
-
-### Visual Studio で起動する （おすすめ）
-
-コマンドライン操作に慣れていない場合は、Visual Studio から起動するのが簡単です。
-
-1. **ソリューションを開く** <br>
-   clone したフォルダ内の `training-backend-csharp.sln` をダブルクリック
-2. **スタートアップ プロジェクトを確認する** <br>
+1. **リポジトリをクローンする** <br>
+   Visual Studio のスタート画面で「リポジトリのクローン」を選び、以下の URL を入力してクローンします。<br>
+   （すでにローカルへ clone 済みなら、フォルダ内の `training-backend-csharp.sln` をダブルクリックで開くだけで OK）
+   ```
+   https://github.com/Vision-Programming-Training/training-backend-csharp.git
+   ```
+2. **ソリューションを開く** <br>
+   クローンしたフォルダ内の `training-backend-csharp.sln` が自動で開きます。
+3. **スタートアップ プロジェクトを確認する** <br>
    ソリューション エクスプローラーで **`TrainingBackend`**（`src` 側）がスタートアップ プロジェクトになっていることを確認します。なっていなければ右クリック →「スタートアップ プロジェクトに設定」。<br>
    ※ `TrainingBackend.Tests` はテスト用なので起動対象ではありません。
-3. **起動する** <br>
+4. **起動する** <br>
    ツールバーの緑の ▶（実行プロファイルが **`http`** になっていることを確認）を押す。デバッグ実行は **F5**、デバッグなし実行は **Ctrl + F5**。<br>
-   初回はビルド〜DB初期化まで自動で行われます。
-4. **Swagger UI が自動で開く** <br>
-   ブラウザが起動して <http://localhost:5000/swagger> が開きます。ここから API を叩いて動作確認できます。
-5. **停止するとき** <br>
+   初回はビルド〜DB初期化まで自動で行われます。SQLite の DB ファイル（`training.db`）が自動生成され、初期データ（商品・クーポン・既存注文）が入ります。インストール作業は不要です。
+5. **Swagger UI が自動で開く** <br>
+   ブラウザが起動して Swagger UI が開きます。ここから API を叩いて動作確認できます。
+   - Swagger UI: <http://localhost:5000/swagger>
+   - API ベース URL: <http://localhost:5000>
+6. **停止するとき** <br>
    ツールバーの赤い ■（停止）、またはデバッグ実行中は **Shift + F5**。
 
-> `dotnet run` と同じ設定（ポート 5000 / 起動時に Swagger を開く）で動きます。設定は `src/Properties/launchSettings.json` の `http` プロファイルに入っています。
+> ポート（5000）や起動時に Swagger を開く設定は `src/Properties/launchSettings.json` の `http` プロファイルに入っています。
 
 ### フロントと一緒に動かす
 
 フロント（[training-frontend](https://github.com/Vision-Programming-Training/training-frontend)）を別ディレクトリに clone し、`config.js` の API ベース URL をこのサーバー（`http://localhost:5000`）に合わせて起動してください。
-
-## コマンド一覧（実行方法）
-
-> **すべてのコマンドはこのリポジトリのルート（`training-backend-csharp/` 直下）で実行します。** <br>
-表中のパスはリポジトリ内の相対パスです（環境ごとの絶対パスには依存しません）。<br>
-> 前提: .NET 8 SDK がインストール済みであること<br>
-（`dotnet --version` で `8.x` が表示されれば OK。インストーラが `dotnet` コマンドを自動で PATH に通します）。
-
-| やりたいこと | コマンド |
-|---|---|
-| サーバーを起動する（ビルド〜DB初期化まで自動） | `dotnet run --project src` |
-| ビルドだけする | `dotnet build` |
-| テストを実行する | `dotnet test` |
-| 依存パッケージを復元する | `dotnet restore` |
-| DB を初期データに戻す | `src/training.db`（と `-shm` / `-wal`）を削除して再度 `dotnet run --project src` |
-
-- 起動後の確認先: Swagger UI = <http://localhost:5000/swagger>（自動で開きます）
-- サーバーの停止: 実行中のターミナルで `Ctrl + C`
 
 ## CORS について（なぜ設定が要るのか）
 
@@ -180,7 +144,7 @@ Visual Studio の場合は、メニューの **「テスト」→「テスト �
 
 ## DB をリセットしたいとき
 
-`training.db`（および `-shm` / `-wal`）を削除して再度 `dotnet run --project src` すると、初期データから作り直されます。
+`training.db`（および `-shm` / `-wal`）を削除して、再度 Visual Studio で起動（**F5** / **Ctrl + F5**）すると、初期データから作り直されます。
 
 ## 開発の進め方
 
