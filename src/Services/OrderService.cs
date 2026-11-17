@@ -130,7 +130,8 @@ public class OrderService : IOrderService
             return null;
         }
 
-        return await _orderRepository.GetCouponByCodeAsync(couponCode);
+        return await _orderRepository.GetCouponByCodeAsync(couponCode)
+            ?? throw new BusinessRuleException("無効なクーポンコードです。");
     }
 
     private static OrderDto MapToDto(Order order)
