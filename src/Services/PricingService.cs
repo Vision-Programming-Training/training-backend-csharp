@@ -26,7 +26,7 @@ public class PricingService : IPricingService
         var discounted = coupon.DiscountType switch
         {
             DiscountType.FixedAmount => subtotal - coupon.DiscountValue,
-            DiscountType.Percentage => subtotal - coupon.DiscountValue,
+            DiscountType.Percentage => subtotal * (1 - coupon.DiscountValue / 100m),
             _ => subtotal
         };
 
