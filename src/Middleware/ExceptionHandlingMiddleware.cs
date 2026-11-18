@@ -27,7 +27,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (NotFoundException ex)
         {
-            await WriteProblemAsync(context, StatusCodes.Status404NotFound, "見つかりません。");
+            await WriteProblemAsync(context, StatusCodes.Status404NotFound, ex.Message);
         }
         catch (BusinessRuleException ex)
         {
