@@ -76,6 +76,6 @@ public class PricingServiceTests
         var items = Items((150m, 1)); // 小計 150
         var coupon = new Coupon { DiscountType = DiscountType.Percentage, DiscountValue = 10m }; // 10%引きクーポン
 
-        Assert.Equal(149m, _pricing.CalculateTotal(items, coupon)); // (150 * 0.9 * 1.10 =  148.5 → 四捨五入で149
+        Assert.Equal(149m, _pricing.CalculateTotal(items, coupon)); // 150 * 0.9 * 1.10 =  148.5 → 四捨五入で149
     }
 }
