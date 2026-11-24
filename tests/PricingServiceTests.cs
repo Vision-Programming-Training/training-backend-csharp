@@ -87,9 +87,9 @@ public class PricingServiceTests
         // WELCOME500クーポンで500円引き
         var coupon500 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m };
 
-        Assert.Equal(1m, _pricing.CalculateTotal(items, coupon299));
-        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon300));
-        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon301));
-        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon500));
+        Assert.Equal(1m, _pricing.ApplyCoupon(300m, coupon299));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon300));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon301));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon500));
     }
 }
