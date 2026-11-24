@@ -74,7 +74,7 @@ public class PricingServiceTests
     public void CalculationTotal_prevents_negative_total()
     {
         var items = Items((300m, 1));
-        var coupon = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m };
+        var coupon = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m }; // クーポンで500円引き
 
         Assert.Equal(0m, _pricing.CalculateTotal(items, coupon));
     }
