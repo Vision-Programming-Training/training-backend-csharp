@@ -71,7 +71,7 @@ public class PricingServiceTests
     }
 
     [Fact]
-    public void CalculateTotal_prevents_negative_total()
+    public void ApplyCoupon_returns_zero_when_discount_exceeds_subtotal()
     {
         var items = Items((300m, 1));
 
