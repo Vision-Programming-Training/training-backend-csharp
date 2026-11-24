@@ -71,11 +71,25 @@ public class PricingServiceTests
     }
 
     [Fact]
-    public void CalculationTotal_prevents_negative_total()
+    public void CalculateTotal_prevents_negative_total()
     {
         var items = Items((300m, 1));
-        var coupon = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m }; // クーポンで500円引き
 
-        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon));
+        // n-1：割引額が小計より1円小さい
+        var coupon299 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 299m };
+
+        // n ：割引額と小計が同じ
+        var coupon300 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 300m };
+
+        // n+1：割引額が小計より1円大きい
+        var coupon301 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 301m };
+
+        // WELCOME500クーポンで500円引き
+        var coupon500 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m };
+
+        Assert.Equal(1m, _pricing.CalculateTotal(items, coupon299));
+        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon300));
+        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon301));
+        Assert.Equal(0m, _pricing.CalculateTotal(items, coupon500));
     }
 }
