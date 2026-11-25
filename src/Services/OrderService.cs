@@ -91,9 +91,9 @@ public class OrderService : IOrderService
             });
         }
 
-        var subtotal = _pricingService.CalculateSubtotal(order.Items);
-        var shippingFee = _pricingService.CalculateShippingFee(subtotal);
-        order.TotalAmount = _pricingService.CalculateTotal(subtotal, shippingFee, coupon);
+        order.Subtotal = _pricingService.CalculateSubtotal(order.Items);
+        order.ShippingFee = _pricingService.CalculateShippingFee(order.Subtotal);
+        order.TotalAmount = _pricingService.CalculateTotal(order.Subtotal, order.ShippingFee, coupon);
 
         await _orderRepository.AddAsync(order);
         await _orderRepository.SaveChangesAsync();
