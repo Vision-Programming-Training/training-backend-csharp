@@ -69,4 +69,26 @@ public class PricingServiceTests
 
         Assert.Equal(116m, _pricing.CalculateTotal(items, null));
     }
+
+    [Fact]
+    public void ApplyCoupon_returns_zero_when_discount_exceeds_subtotal()
+    {
+
+        // n-1：割引額が小計より1円小さい
+        var coupon299 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 299m };
+
+        // n ：割引額と小計が同じ
+        var coupon300 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 300m };
+
+        // n+1：割引額が小計より1円大きい
+        var coupon301 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 301m };
+
+        // WELCOME500クーポンで500円引き
+        var coupon500 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 500m };
+
+        Assert.Equal(1m, _pricing.ApplyCoupon(300m, coupon299));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon300));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon301));
+        Assert.Equal(0m, _pricing.ApplyCoupon(300m, coupon500));
+    }
 }
