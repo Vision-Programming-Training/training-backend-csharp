@@ -63,6 +63,7 @@ public class OrderServiceTests
         var result = await service.CreateAsync(request);
 
         Assert.Equal("Confirmed", result.Status);
+        Assert.Equal(500m, result.ShippingFee);  // 小計 1800 < 5000 なので送料あり
         Assert.Equal(2480m, result.TotalAmount); // 1800 * 1.10 + 500(送料)
         Assert.Equal(2, result.Items.Count);
 
@@ -117,6 +118,29 @@ public class OrderServiceTests
 
         Assert.Equal("WELCOME500", result.CouponCode);
         Assert.Equal(1270m, result.TotalAmount); // 700 × 1.10 ＋ 500(送料)
+    }
+
+    [Fact]
+    public async Task CreateAsync_judges_shipping_fee_before_coupon_discount()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        var request = new CreateOrderRequest
+        {
+            Items = new()
+            {
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }, // ノート x1 = 300
+                new CreateOrderItemRequest { ProductId = 2, Quantity = 4 }  // マグカップ x4 = 4800
+            },
+            CouponCode = "SALE10"
+        };
+
+        var result = await service.CreateAsync(request);
+
+        // 割引後は 4590 で 5000 未満だが、送料は割引前の小計 5100 で判定するので無料
+        Assert.Equal(0m, result.ShippingFee);
+        Assert.Equal(5049m, result.TotalAmount); // 5100 * 0.9 = 4590、* 1.10 = 5049
     }
 
     [Fact]

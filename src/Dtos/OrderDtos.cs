@@ -26,4 +26,5 @@ public record OrderDto(
     decimal TotalAmount,
     string? CouponCode,
     DateTime CreatedAt,
-    IReadOnlyList<OrderItemDto> Items);
+    IReadOnlyList<OrderItemDto> Items,
+    decimal ShippingFee);

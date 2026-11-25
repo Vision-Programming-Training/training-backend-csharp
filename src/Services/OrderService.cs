@@ -153,6 +153,7 @@ public class OrderService : IOrderService
             order.TotalAmount,
             order.Coupon?.Code,
             order.CreatedAt,
-            items);
+            items,
+            order.ShippingFee);
     }
 }
