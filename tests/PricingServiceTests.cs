@@ -73,7 +73,6 @@ public class PricingServiceTests
     [Fact]
     public void ApplyCoupon_returns_zero_when_discount_exceeds_subtotal()
     {
-        var items = Items((300m, 1));
 
         // n-1：割引額が小計より1円小さい
         var coupon299 = new Coupon { DiscountType = DiscountType.FixedAmount, DiscountValue = 299m };
