@@ -63,7 +63,7 @@ public class OrderServiceTests
         var result = await service.CreateAsync(request);
 
         Assert.Equal("Confirmed", result.Status);
-        Assert.Equal(1980m, result.TotalAmount); // 1800 * 1.10
+        Assert.Equal(2480m, result.TotalAmount); // 1800 * 1.10 + 500(送料)
         Assert.Equal(2, result.Items.Count);
 
         // 在庫が引かれている
@@ -116,7 +116,7 @@ public class OrderServiceTests
         var result = await service.CreateAsync(request);
 
         Assert.Equal("WELCOME500", result.CouponCode);
-        Assert.Equal(770m, result.TotalAmount); // (1200 - 500) * 1.10
+        Assert.Equal(1270m, result.TotalAmount); // 700 × 1.10 ＋ 500(送料)
     }
 
     [Fact]
