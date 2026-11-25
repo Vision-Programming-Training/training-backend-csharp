@@ -292,4 +292,34 @@ public class OrderServiceTests
         Assert.Equal(600m, historyLine.LineTotal);             // 小計も不変
         Assert.Equal(created.TotalAmount, fetched.TotalAmount); // 税込合計も不変
     }
+
+    [Fact]
+    public async Task Order_keeps_shipping_fee_even_after_product_price_changes()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        // ノート(¥300) を 2 個注文 → 小計 600 なので送料 500
+        var created = await service.CreateAsync(new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 1, Quantity = 2 } }
+        });
+        Assert.Equal(500m, created.ShippingFee);
+        Assert.Equal(1160m, created.TotalAmount); // 600 * 1.10 + 500
+
+        // あとからノートを ¥3000 に値上げする（今の価格で再計算すると小計 6000 → 送料無料になってしまう）
+        var product = await db.Products.FindAsync(1);
+        product!.Price = 3000m;
+        await db.SaveChangesAsync();
+
+        // 履歴を開き直しても、確定時点の送料・合計のまま
+        var fetched = await service.GetByIdAsync(created.Id);
+        Assert.Equal(500m, fetched.ShippingFee);
+        Assert.Equal(1160m, fetched.TotalAmount);
+
+        // キャンセルしても送料・合計は変わらない
+        var cancelled = await service.CancelAsync(created.Id);
+        Assert.Equal(500m, cancelled.ShippingFee);
+        Assert.Equal(1160m, cancelled.TotalAmount);
+    }
 }
