@@ -47,6 +47,7 @@ public static class SeedData
 
         // --- 既存の注文（一覧・明細の確認用） ---
         // 合計金額は「(税抜小計 - 割引) × 1.10」を円未満四捨五入した値
+        // 送料導入前の注文なので送料は 0 円（過去の合計金額は書き換えない）
         var orderA = new Order
         {
             Status = OrderStatus.Confirmed,
@@ -56,6 +57,8 @@ public static class SeedData
                 new OrderItem { ProductId = notebook.Id, Quantity = 2, UnitPrice = notebook.Price },
                 new OrderItem { ProductId = mug.Id, Quantity = 1, UnitPrice = mug.Price }
             },
+            Subtotal = 1800m,
+            ShippingFee = 0m,
             TotalAmount = 1980m // (600 + 1200) * 1.10
         };
 
@@ -69,6 +72,8 @@ public static class SeedData
                 new OrderItem { ProductId = tShirt.Id, Quantity = 1, UnitPrice = tShirt.Price },
                 new OrderItem { ProductId = pen.Id, Quantity = 3, UnitPrice = pen.Price }
             },
+            Subtotal = 2950m,
+            ShippingFee = 0m,
             TotalAmount = 2695m // (2950 - 500) * 1.10
         };
 
@@ -81,6 +86,8 @@ public static class SeedData
             {
                 new OrderItem { ProductId = toteBag.Id, Quantity = 1, UnitPrice = toteBag.Price }
             },
+            Subtotal = 1800m,
+            ShippingFee = 0m,
             TotalAmount = 1782m // (1800 - 10%) * 1.10
         };
 

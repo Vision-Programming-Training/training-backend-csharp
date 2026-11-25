@@ -63,7 +63,8 @@ public class OrderServiceTests
         var result = await service.CreateAsync(request);
 
         Assert.Equal("Confirmed", result.Status);
-        Assert.Equal(1980m, result.TotalAmount); // 1800 * 1.10
+        Assert.Equal(500m, result.ShippingFee);  // 小計 1800 < 5000 なので送料あり
+        Assert.Equal(2480m, result.TotalAmount); // 1800 * 1.10 + 500(送料)
         Assert.Equal(2, result.Items.Count);
 
         // 在庫が引かれている
@@ -116,7 +117,30 @@ public class OrderServiceTests
         var result = await service.CreateAsync(request);
 
         Assert.Equal("WELCOME500", result.CouponCode);
-        Assert.Equal(770m, result.TotalAmount); // (1200 - 500) * 1.10
+        Assert.Equal(1270m, result.TotalAmount); // 700 × 1.10 ＋ 500(送料)
+    }
+
+    [Fact]
+    public async Task CreateAsync_judges_shipping_fee_before_coupon_discount()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        var request = new CreateOrderRequest
+        {
+            Items = new()
+            {
+                new CreateOrderItemRequest { ProductId = 1, Quantity = 1 }, // ノート x1 = 300
+                new CreateOrderItemRequest { ProductId = 2, Quantity = 4 }  // マグカップ x4 = 4800
+            },
+            CouponCode = "SALE10"
+        };
+
+        var result = await service.CreateAsync(request);
+
+        // 割引後は 4590 で 5000 未満だが、送料は割引前の小計 5100 で判定するので無料
+        Assert.Equal(0m, result.ShippingFee);
+        Assert.Equal(5049m, result.TotalAmount); // 5100 * 0.9 = 4590、* 1.10 = 5049
     }
 
     [Fact]
@@ -267,5 +291,35 @@ public class OrderServiceTests
         Assert.Equal(300m, historyLine.UnitPrice);              // 現在価格 800 に引きずられない
         Assert.Equal(600m, historyLine.LineTotal);             // 小計も不変
         Assert.Equal(created.TotalAmount, fetched.TotalAmount); // 税込合計も不変
+    }
+
+    [Fact]
+    public async Task Order_keeps_shipping_fee_even_after_product_price_changes()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        // ノート(¥300) を 2 個注文 → 小計 600 なので送料 500
+        var created = await service.CreateAsync(new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 1, Quantity = 2 } }
+        });
+        Assert.Equal(500m, created.ShippingFee);
+        Assert.Equal(1160m, created.TotalAmount); // 600 * 1.10 + 500
+
+        // あとからノートを ¥3000 に値上げする（今の価格で再計算すると小計 6000 → 送料無料になってしまう）
+        var product = await db.Products.FindAsync(1);
+        product!.Price = 3000m;
+        await db.SaveChangesAsync();
+
+        // 履歴を開き直しても、確定時点の送料・合計のまま
+        var fetched = await service.GetByIdAsync(created.Id);
+        Assert.Equal(500m, fetched.ShippingFee);
+        Assert.Equal(1160m, fetched.TotalAmount);
+
+        // キャンセルしても送料・合計は変わらない
+        var cancelled = await service.CancelAsync(created.Id);
+        Assert.Equal(500m, cancelled.ShippingFee);
+        Assert.Equal(1160m, cancelled.TotalAmount);
     }
 }

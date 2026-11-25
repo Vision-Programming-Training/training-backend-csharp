@@ -9,6 +9,9 @@ public class Order
     /// <summary>注文のステータス（未確定／確定済み／キャンセル済み）</summary>
     public OrderStatus Status { get; set; }
 
+    /// <summary>確定時の小計</summary>
+    public decimal Subtotal { get; set; }
+
     /// <summary>確定時の税込合計</summary>
     public decimal TotalAmount { get; set; }
 
@@ -23,4 +26,7 @@ public class Order
 
     /// <summary>注文明細の一覧</summary>
     public List<OrderItem> Items { get; set; } = new();
+
+    /// <summary>送料</summary>
+    public decimal ShippingFee { get; set; }
 }

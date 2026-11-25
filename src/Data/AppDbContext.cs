@@ -22,6 +22,10 @@ public class AppDbContext : DbContext
             .HasColumnType("decimal(18,2)");
 
         modelBuilder.Entity<Order>()
+            .Property(o => o.Subtotal)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Order>()
             .Property(o => o.TotalAmount)
             .HasColumnType("decimal(18,2)");
 
@@ -31,6 +35,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Coupon>()
             .Property(c => c.DiscountValue)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.ShippingFee)
             .HasColumnType("decimal(18,2)");
 
         // 列挙型は読みやすいよう文字列で保存する
