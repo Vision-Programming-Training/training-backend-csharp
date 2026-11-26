@@ -268,4 +268,66 @@ public class OrderServiceTests
         Assert.Equal(600m, historyLine.LineTotal);             // 小計も不変
         Assert.Equal(created.TotalAmount, fetched.TotalAmount); // 税込合計も不変
     }
+
+    [Fact]
+    public async Task CreateAsync_throws_when_coupon_used_with_total_amount_under_1000()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        db.Products.Add(new Product { Id = 4, Name = "テスト商品", Price = 999m, Stock = 10 });
+        await db.SaveChangesAsync();
+
+        var request = new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 4, Quantity = 1 } },
+            CouponCode = "WELCOME500"
+        };
+
+        await Assert.ThrowsAsync<BusinessRuleException>(() => service.CreateAsync(request));
+        Assert.Equal(10, (await db.Products.FindAsync(4))!.Stock); // 在庫が戻っている
+    }
+
+    [Fact]
+    public async Task CreateAsync_throws_when_coupon_used_with_total_amount_equal_1000()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        db.Products.Add(new Product { Id = 4, Name = "テスト商品", Price = 1000m, Stock = 10 });
+        await db.SaveChangesAsync();
+
+        var request = new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 4, Quantity = 1 } },
+            CouponCode = "WELCOME500"
+        };
+
+        var result = await service.CreateAsync(request);
+
+        Assert.Equal("Confirmed", result.Status);
+        Assert.Equal("WELCOME500", result.CouponCode);
+        Assert.Equal(9, (await db.Products.FindAsync(4))!.Stock); // 在庫が1個減っている
+    }
+
+    public async Task CreateAsync_throws_when_coupon_used_with_total_amount_over_1000()
+    {
+        using var db = SeededContext();
+        var service = CreateService(db);
+
+        db.Products.Add(new Product { Id = 4, Name = "テスト商品", Price = 1001m, Stock = 10 });
+        await db.SaveChangesAsync();
+
+        var request = new CreateOrderRequest
+        {
+            Items = new() { new CreateOrderItemRequest { ProductId = 4, Quantity = 1 } },
+            CouponCode = "WELCOME500"
+        };
+
+        var result = await service.CreateAsync(request);
+
+        Assert.Equal("Confirmed", result.Status);
+        Assert.Equal("WELCOME500", result.CouponCode);
+        Assert.Equal(9, (await db.Products.FindAsync(4))!.Stock); // 在庫が1個減っている
+    }
 }
