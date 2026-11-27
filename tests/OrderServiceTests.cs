@@ -289,7 +289,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public async Task CreateAsync_throws_when_coupon_used_with_total_amount_equal_1000()
+    public async Task CreateAsync_succeeds_when_coupon_used_with_total_amount_equal_1000()
     {
         using var db = SeededContext();
         var service = CreateService(db);
@@ -310,7 +310,7 @@ public class OrderServiceTests
         Assert.Equal(9, (await db.Products.FindAsync(4))!.Stock); // 在庫が1個減っている
     }
 
-    public async Task CreateAsync_throws_when_coupon_used_with_total_amount_over_1000()
+    public async Task CreateAsync_succeeds_when_coupon_used_with_total_amount_over_1000()
     {
         using var db = SeededContext();
         var service = CreateService(db);
