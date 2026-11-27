@@ -310,6 +310,7 @@ public class OrderServiceTests
         Assert.Equal(9, (await db.Products.FindAsync(4))!.Stock); // 在庫が1個減っている
     }
 
+    [Fact]
     public async Task CreateAsync_succeeds_when_coupon_used_with_total_amount_over_1000()
     {
         using var db = SeededContext();

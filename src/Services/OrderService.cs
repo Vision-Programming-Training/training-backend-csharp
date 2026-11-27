@@ -14,6 +14,7 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
     private readonly IPricingService _pricingService;
+    private const decimal MinimumCouponAmount = 1000m; // クーポンの最低利用金額
 
     public OrderService(
         IOrderRepository orderRepository,
@@ -93,21 +94,17 @@ public class OrderService : IOrderService
         var subtotal = _pricingService.CalculateSubtotal(order.Items);
 
         // クーポンの最低利用金額チェック
-        if (coupon is not null && subtotal < 1000 )
+        if (coupon is not null && subtotal < MinimumCouponAmount )
         {
             throw new BusinessRuleException(
-                $"クーポンは1000円以上からご利用いただけます");
+                $"クーポンは{MinimumCouponAmount}円以上からご利用いただけます");
         }
-
 
         order.TotalAmount = _pricingService.CalculateTotal(order.Items, coupon);
 
         // 在庫を減らす
-        foreach (var item in requestedQuantities)
+        foreach (var (productId, quantity) in requestedQuantities)
         {
-            var productId = item.Key;
-            var quantity = item.Value;
-
             var product = productById[productId];
 
             product.Stock = product.Stock - quantity;
