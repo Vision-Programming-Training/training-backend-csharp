@@ -81,7 +81,6 @@ public class OrderService : IOrderService
                     $"在庫が不足しています (商品: {product.Name}, 在庫: {product.Stock}, 要求: {quantity})");
             }
 
-            product.Stock -= quantity;
 
             order.Items.Add(new OrderItem
             {
@@ -91,7 +90,28 @@ public class OrderService : IOrderService
             });
         }
 
+        var subtotal = _pricingService.CalculateSubtotal(order.Items);
+
+        // クーポンの最低利用金額チェック
+        if (coupon is not null && subtotal < 1000 )
+        {
+            throw new BusinessRuleException(
+                $"クーポンは1000円以上からご利用いただけます");
+        }
+
+
         order.TotalAmount = _pricingService.CalculateTotal(order.Items, coupon);
+
+        // 在庫を減らす
+        foreach (var item in requestedQuantities)
+        {
+            var productId = item.Key;
+            var quantity = item.Value;
+
+            var product = productById[productId];
+
+            product.Stock = product.Stock - quantity;
+        }
 
         await _orderRepository.AddAsync(order);
         await _orderRepository.SaveChangesAsync();
